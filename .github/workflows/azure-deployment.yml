@@ -1,0 +1,72 @@
+name: Build and deploy ASP.NET Core app to an Azure Web App
+
+on:
+  push:
+    branches:
+      - main
+env:
+    AZURE_WEBAPP_NAME: samples-azure-deployment-with-github-actions
+    AZURE_WEBAPP_PACKAGE_PATH: '.'
+    AZURE_WEBAPP_ENVIRONMENT: "Production"
+    DOTNET_VERSION: '7'
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v3
+  
+            - name: Setup .NET Core SDK
+              uses: actions/setup-dotnet@v3
+              with:
+                dotnet-version: ${{ env.DOTNET_VERSION }}
+            
+            - name: Cache NuGet packages
+              uses: actions/cache@v2
+              with:
+                path: ~/.nuget/packages
+                key: nuget-${{ env.DOTNET_VERSION }}-${{ runner.os }}
+                restore-keys: nuget-${{ env.DOTNET_VERSION }}-
+            
+            - name: Restore
+              run: dotnet restore ./AzureDeploymentUsingGitHubActions.sln
+
+            - name: Build
+              run: dotnet build ./AzureDeploymentUsingGitHubActions.sln --configuration ${{ env.AZURE_WEBAPP_ENVIRONMENT }} --no-restore
+
+            - name: Publish
+              run: dotnet publish ./AzureDeploymentUsingGitHubActions.sln --configuration ${{ env.AZURE_WEBAPP_ENVIRONMENT }} --no-build --output ${{env.DOTNET_ROOT}}/myapp
+
+            - name: Upload artifact for deployment job
+              uses: actions/upload-artifact@v3
+              with:
+                name: .net-app
+                path: ${{env.DOTNET_ROOT}}/myapp
+
+
+    deploy:
+        runs-on: ubuntu-latest
+        needs: 
+         - build
+        environment:
+            name: 'production'
+            url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+        steps:
+            - name: Download artifact from build job
+              uses: actions/download-artifact@v3
+              with:
+                name: .net-app
+
+            - name: Log in to Azure using Service Principal
+              run: |
+                az login --service-principal --username ${{ secrets.AZURE_SP_CLIENT_ID }} --password ${{ secrets.AZURE_SP_PASSWORD }} --tenant ${{ secrets.AZURE_SP_TENANT_ID }}
+
+            - name: Deploy to Azure Web App
+              id: deploy-to-webapp
+              uses: azure/webapps-deploy@v2
+              with:
+                app-name: ${{ env.AZURE_WEBAPP_NAME }}
+                package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
