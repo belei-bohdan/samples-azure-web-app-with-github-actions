@@ -32,13 +32,13 @@ jobs:
                 restore-keys: nuget-${{ env.DOTNET_VERSION }}-
             
             - name: Restore
-              run: dotnet restore ./AzureDeploymentUsingGitHubActions.sln
+              run: dotnet restore ./AzureWebAppWithGitHubActions.sln
 
             - name: Build
-              run: dotnet build ./AzureDeploymentUsingGitHubActions.sln --configuration ${{ env.AZURE_WEBAPP_ENVIRONMENT }} --no-restore
+              run: dotnet build ./AzureWebAppWithGitHubActions.sln --configuration ${{ env.AZURE_WEBAPP_ENVIRONMENT }} --no-restore
 
             - name: Publish
-              run: dotnet publish ./AzureDeploymentUsingGitHubActions.sln --configuration ${{ env.AZURE_WEBAPP_ENVIRONMENT }} --no-build --output ${{env.DOTNET_ROOT}}/myapp
+              run: dotnet publish ./AzureWebAppWithGitHubActions.sln --configuration ${{ env.AZURE_WEBAPP_ENVIRONMENT }} --no-build --output ${{env.DOTNET_ROOT}}/myapp
 
             - name: Upload artifact for deployment job
               uses: actions/upload-artifact@v3
