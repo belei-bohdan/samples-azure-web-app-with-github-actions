@@ -3,7 +3,7 @@ name: Build and deploy ASP.NET Core app to an Azure Web App
 on:
   push:
     branches:
-      - main
+      - master
 
 env:
     AZURE_WEBAPP_NAME: samples-azure-deployment-with-github-actions
