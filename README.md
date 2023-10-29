@@ -1,4 +1,4 @@
-# Sample ASP.NET Core Application Deployment with GitHub Actions
+# Deploying ASP.NET Core Application to Azure Web App with GitHub Actions
 
 This repository contains a sample ASP.NET Core application and demonstrates how to build and deploy it to an Azure Web App using GitHub Actions. The application includes a simple endpoint and integrates with Swagger for API documentation.
 
