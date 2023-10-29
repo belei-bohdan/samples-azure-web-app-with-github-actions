@@ -10,11 +10,11 @@ Before you begin, make sure you have the following in place:
 - An Azure subscription
 - A GitHub account
 
-### Deployment
+## Deployment
 
 This repository is configured with GitHub Actions workflows that automate the build, deployment, and infrastructure setup to an Azure Web App.
 
-### Workflow Details
+## Workflow Details
 
 This repository includes two GitHub Actions workflows for building, deploying the application, and setting up Azure infrastructure. Here's an overview of the workflows:
 
@@ -37,6 +37,8 @@ The workflow consists of two jobs:
 The IaC workflow contains a job:
 
 - **create-azure-resources**: This job creates and configures the required Azure resources, such as the Azure App Service plan and Web App. It is executed as part of the setup process for the ASP.NET Core app deployment workflow.
+
+## Configuration
 
 ### Configuring Azure Service Principal and Secrets
 
@@ -82,10 +84,7 @@ Change the value of the `AZURE_WEBAPP_NAME` variable, which you can find it in t
 - `azure-deployment.yml`
 - `azure-iac.yml`
 
-
-
-
-### Disclaimer
+## Disclaimer
 
 Please note that this application is intentionally designed as a simplified example for learning purposes. 
 It does not adhere to best practices that you would typically use in a production application. 
