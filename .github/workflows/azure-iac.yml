@@ -1,0 +1,46 @@
+name: Azure Infrastructure as Code (IaC)
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+    RESOURCE_GROUP: samples-azure-web-app-with-github-actions
+    AZURE_WEBAPP_NAME: azure-web-app-with-github-actions-demo
+    AZURE_APP_SERVICE_PLAN_NAME: azure-web-app-with-github-actions-plan
+    AZURE_APP_SERVICE_PLAN_SKU: F1
+    LOCATION:  westeurope
+
+jobs:
+  create-azure-resources:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Log in to Azure using Service Principal
+      run: |
+         az login --service-principal --username ${{ secrets.AZURE_SP_CLIENT_ID }} --password=${{ secrets.AZURE_SP_PASSWORD }} --tenant ${{ secrets.AZURE_SP_TENANT_ID }}
+
+    - name: Check if Azure Web App exists
+      id: check-webapp
+      run: |
+        # Check if the Azure Web App already exists
+        if az webapp show --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }} --query "name" -o tsv; then
+          echo "Web App already exists."
+          echo "::set-output name=exists::true"
+        else
+          echo "Web App does not exist."
+          echo "::set-output name=exists::false"
+        fi
+
+    - name: Create Azure Web App
+      if: steps.check-webapp.outputs.exists == 'false'
+      run: |
+        # Create an App Service plan 
+        az appservice plan  create --name ${{ env.AZURE_APP_SERVICE_PLAN_NAME }} --resource-group ${{ env.RESOURCE_GROUP }} --location ${{ env.LOCATION }} --sku ${{ env.AZURE_APP_SERVICE_PLAN_SKU }}
+
+        # Create the Web App
+        az webapp create --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }} --plan ${{ env.AZURE_APP_SERVICE_PLAN_NAME }}

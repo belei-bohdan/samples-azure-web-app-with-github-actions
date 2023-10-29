@@ -1,9 +1,11 @@
 name: Build and deploy ASP.NET Core app to an Azure Web App
 
 on:
-  push:
-    branches:
-      - master
+  workflow_run:
+    workflows:
+      - Azure Infrastructure as Code (IaC)
+    types:
+      - completed
 
 env:
     AZURE_WEBAPP_NAME: azure-web-app-with-github-actions-demo
