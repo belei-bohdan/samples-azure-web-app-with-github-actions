@@ -6,7 +6,7 @@ on:
       - master
 
 env:
-    AZURE_WEBAPP_NAME: samples-azure-deployment-with-github-actions
+    AZURE_WEBAPP_NAME: azure-web-app-with-github-actions-demo
     AZURE_WEBAPP_PACKAGE_PATH: '.'
     AZURE_WEBAPP_ENVIRONMENT: "Release"
     DOTNET_VERSION: '7'
