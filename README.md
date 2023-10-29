@@ -2,6 +2,8 @@
 
 This repository contains a sample ASP.NET Core application and demonstrates how to build and deploy it to an Azure Web App using GitHub Actions. The application includes a simple endpoint and integrates with Swagger for API documentation.
 
+In addition to deploying the application, this repository showcases Infrastructure as Code (IaC) principles. The IaC workflow automates the setup of Azure resources, including the creation and configuration of the required Azure App Service plan and Web App. This process is executed seamlessly as part of the deployment pipeline, ensuring that not only the application but also its underlying infrastructure is efficiently managed.
+
 ## Prerequisites
 
 Before you begin, make sure you have the following in place:
